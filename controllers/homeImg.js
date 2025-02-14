@@ -32,4 +32,17 @@ const addhomeImg = async (req, res) => {
   }
 };
 
-module.exports = { addhomeImg };
+const fetchImg=async(req,res)=>{
+  try{
+    const allImages=await homeSchema.find({});
+    if(!allImages)
+      return res.status(400).send("Images not found");
+
+    return res.status(200).send({Message:"all images are here",images:allImages})
+
+  }catch(error){
+    return res.status(500).send({Message:"internal  error",error:error.message})
+  }
+}
+
+module.exports = { addhomeImg ,fetchImg};
