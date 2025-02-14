@@ -9,7 +9,7 @@ let connectDb=async(req,res)=>{
         });
         
     } catch (error) {
-        console.log("connection failed due to internal errror");
+        console.log({message:"connection failed due to internal errror",error:error.message});
         
     }
 };
