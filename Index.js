@@ -1,11 +1,14 @@
 const express=require("express");
 require("dotenv").config();
-
+const cors=require("cors")
+app.use(cors());
 const app=express();
 app.use(express.json());
 const connectDb=require("./config/database")
 
 connectDb();
+
+
 
 
  app.use('/user',require('./Routes/userAuth'))
