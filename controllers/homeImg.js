@@ -82,6 +82,19 @@ const addProductImg = async (req, res) => {
   }
 };
 
+// **********************************************************************
 
+const fetchProductImg=async(req,res)=>{
+  try{
+    const allImages=await productImgSchema.find({});
+    if(!allImages)
+      return res.status(400).send("Images not found");
+    
+    return res.status(200).send(allImages)
 
-module.exports = { addhomeImg ,fetchImg,addProductImg};
+  }catch(error){
+    return res.status(500).send({Message:"internal  error",error:error.message})
+  }
+}
+
+module.exports = { addhomeImg ,fetchImg,addProductImg,fetchProductImg};
