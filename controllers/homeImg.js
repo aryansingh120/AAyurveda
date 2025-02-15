@@ -93,7 +93,7 @@ const fetchProductImg=async(req,res)=>{
     return res.status(200).send(allImages)
 
   }catch(error){
-    return res.status(500).send({Message:"internal  error",error:error.message})
+    return res.status(500).send({Message:" found internal  error",error:error.message})
   }
 }
 
