@@ -1,6 +1,5 @@
 const cloudinary = require("../config/cloudinaryConfig");
 const homeSchema = require("../Models/homeImage");
-const productImgSchema=require("../Models/productImage")
 
 const addhomeImg = async (req, res) => {
   try {
@@ -97,4 +96,4 @@ const fetchProductImg=async(req,res)=>{
   }
 }
 
-module.exports = { addhomeImg ,fetchImg,addProductImg,fetchProductImg};
+module.exports = { addhomeImg ,fetchImg};
