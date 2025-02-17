@@ -50,7 +50,7 @@ const allProducts=async(req,res)=>{
         return res.status(200).json({message:"all products are here",TotalProducts: allProducts.length,allProducts:allProducts})
         
     } catch (error) {
-        return res.status(500).json({ message:"internal error",error:error });
+        return res.status(500).json({ message:"internal error receive",error:error });
 
         
     }
