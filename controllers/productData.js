@@ -87,4 +87,20 @@ const showPoducts=async(req,res)=>{
     }
 }
 
-module.exports = {productData,skincarePoducts,nutritionProducts,showPoducts};
+const hairoilProducts=async(req,res)=>{
+    try{
+    const allProducts=await dataSchema.find({category: "Hair Oil"});
+        if(!allProducts)
+            return res.status(400).json({message:"products not received"})
+
+        return res.status(200).json({message:"all products are here",TotalProducts: allProducts.length,allProducts:allProducts})
+        
+    } catch (error) {
+        return res.status(500).json({ message:"internal error receive",error:error });
+
+        
+    }
+
+}
+
+module.exports = {productData,skincarePoducts,nutritionProducts,showPoducts,hairoilProducts};
