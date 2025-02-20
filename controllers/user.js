@@ -10,11 +10,11 @@ const saltRounds=10;
 const signup=async(req,res)=>{
     const {fullName,email,password,confirmPassword}=req.body;
     if(!email || !fullName || !password || !confirmPassword)
-        return res.status(404).json("all fields are required");
+        return res.status(404).json({message:"all fields are required"});
 
     try {
         if(password!==confirmPassword)
-            return res.status(400).json("pass or confirmpass not same")
+            return res.status(400).json({message:"pass or confirmpass not same"})
           const existinguser=await user2Schema.findOne({email});
           if(existinguser)
             return res.status(400).json({message:"email already exist"});
@@ -30,7 +30,7 @@ const signup=async(req,res)=>{
 
        
         
-    return res.status(200).json("otp sent on email")
+    return res.status(200).json({message:"otp sent on email"})
 
     } catch (error) {
         return res.status(500).json({message:"internal error",error:error.message})
