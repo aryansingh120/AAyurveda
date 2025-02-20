@@ -43,9 +43,12 @@ const verifyOtp=async(req,res)=>{
     if(!otp)
         return res.status(400).json("otp required");
     try {
+
         const user= await user2Schema.findOne({otp})
         if(!user)
             return res.status(500).json("invalid otp")
+         
+         
           
           const user2={
             fullName:user.fullName,

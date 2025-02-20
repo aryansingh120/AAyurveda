@@ -1,8 +1,10 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const crypto=require("crypto");
-const otpGenerator=()=>crypto.randomInt(1000,9999);
+const otpGenerator=()=>crypto.randomInt(100,999);
 const storeOtp=otpGenerator();
+console.log(storeOtp);
+
 
 // ✅ Email transporter setup
 const transporter = nodemailer.createTransport({
