@@ -31,4 +31,17 @@ const uploadVideo = async (req, res) => {
   }
 };
 
-module.exports = { uploadVideo };
+const allVideos=async(req,res)=>{
+  try {
+    const allvideos=await videoSchema.find({});
+    if(!allVideos)
+      return res.status(400).json("videos not found");
+
+    return res.status(200).json({Message:"all videos are here",videos:allvideos})
+    
+  } catch (error) {
+    return res.status(500).json({Message:"internal error",error:error.message})
+    
+  }
+}
+module.exports = { uploadVideo,allVideos };
