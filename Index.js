@@ -17,6 +17,8 @@ connectDb();
  app.use("/order",require("./Routes/order"));
  app.use("/home",require("./Routes/home"));
  app.use("/productData",require("./Routes/productData"))
+ app.use("/video",require("./Routes/video"))
+
 //  app.use("/ajay",require("./Routes/payment"))
 
 
