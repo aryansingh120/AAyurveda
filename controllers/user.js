@@ -30,7 +30,7 @@ const signup=async(req,res)=>{
 
        
         
-    return res.status(200).json({message:"otp sent on email"})
+    return res.status(200).json({message:"Otp sent on email"})
 
     } catch (error) {
         return res.status(500).json({message:"internal error",error:error.message})
