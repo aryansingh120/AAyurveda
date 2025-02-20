@@ -17,7 +17,7 @@ const signup=async(req,res)=>{
             return res.status(400).json("pass or confirmpass not same")
           const existinguser=await user2Schema.findOne({email});
           if(existinguser)
-            return res.status(400).json("email already exist");
+            return res.status(400).json({message:"email already exist"});
 
         
         await user2Schema.collection.drop();
