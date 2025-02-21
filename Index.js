@@ -6,6 +6,7 @@ app.use(express.json());
 const connectDb=require("./config/database")
 app.use(cors());
 
+
 connectDb();
 
 
@@ -17,8 +18,8 @@ connectDb();
  app.use("/order",require("./Routes/order"));
  app.use("/home",require("./Routes/home"));
  app.use("/productData",require("./Routes/productData"))
- app.use("/video",require("./Routes/video"))
-
+ app.use("/video",require("./Routes/video"));
+app.use("/cart",require("./Routes/cartDetail"))
 //  app.use("/ajay",require("./Routes/payment"))
 
 
