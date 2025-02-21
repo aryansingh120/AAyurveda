@@ -5,7 +5,6 @@ const SECRET_KEY = process.env.SECRET_KEY; // Best practice: .env me store karo
 
 const verifyToken = (req, res, next) => {
     const token = req.header("Authorization");
-
     if (!token) {
         return res.status(401).json({ message: "Access Denied. No token provided" });
     }

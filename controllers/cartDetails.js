@@ -2,13 +2,14 @@ const CartDetail = require("../Models/cartModel");
 
 const cartDetails = async (req, res) => {
   try {
-    const { productId, userId, quantity } = req.body;
+    const { productId,quantity } = req.body;
+    const user = req.user //middleware se aaya h
 
-    if (!productId || !userId || !quantity) {
+    if (!productId) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingCartItem = await CartDetail.findOne({ productId, userId });
+    const existingCartItem = await CartDetail.findOne({ productId, userId :user?.userId });
     if(existingCartItem)
     {
         existingCartItem.quantity += quantity;
@@ -17,7 +18,7 @@ const cartDetails = async (req, res) => {
     }
 
 
-    const cartOrder = { productId, userId, quantity };
+    const cartOrder = { productId, userId :user?.userId };
 
     const result = await CartDetail.create(cartOrder);
 

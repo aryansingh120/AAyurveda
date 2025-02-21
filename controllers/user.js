@@ -85,7 +85,7 @@ const login=async(req,res)=>{
     const token = jwt.sign(
         { userId: user._id, email: user.email }, // Payload
         process.env.SECRET_KEY, // Secret Key from .env
-        { expiresIn: "1h" } // Token expiry time
+        { expiresIn: "72h" } // Token expiry time
     );
 
     await loginMail(user.fullName,email)
