@@ -5,7 +5,7 @@ const cartDetails = async (req, res) => {
     const { productId,quantity } = req.body;
     const user = req.user //middleware se aaya h
 
-    if (!productId) {
+    if (!productId || !quantity) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
