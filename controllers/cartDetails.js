@@ -24,22 +24,41 @@ const cartDetails = async (req, res) => {
 
     return res.status(200).json({ message: "Cart added successfully", result });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res.status(500).json({ message: "Internal Server error", error: error.message });
   }
 };
 
-const allCart=async(req,res)=>{
-    try{
-        const allCart=await CartDetail.find({});
-        if(!allCart.length)
-            return res.status(400).json({message:"cartItems not found"})
+const allCart = async (req, res) => {
+  try {
+      const userId = req.user.userId;  
+      
+      const allCartItems = await CartDetail.find({ userId }).populate("productId"); 
 
-        return res.status(200).json({message:"all items are here",allCarts:allCart})
+      if (!allCartItems.length) {
+          return res.status(404).json({ message: "No items found in your cart" });
+      }
 
-    }catch(error){
-        return res.status(500).json({message:"internal error",error:error.message})
-    }
+      return res.status(200).json({ message: "Cart items fetched successfully",totalProducts:allCartItems.length, allCarts: allCartItems });
+
+  } catch (error) {
+      return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+const deleteCart=async(req,res)=>{
+  try {
+         const {productId}=req.body
+         if(!productId)
+          return res.status(400).json({message:"product id not received"})
+        const result=await CartDetail.findOneAndDelete({productId:productId})
+        if(!result)
+          return res.status(400).json({message:"Id not found and Item not deleted"})
+
+        return res.status(200).send({message:"item deleted successfully",result:result})
+  } catch (error) {
+    return res.status(500).json({message:"Internal error",error:error.message})
+  }
 
 }
 
-module.exports = {cartDetails,allCart};
+module.exports = {cartDetails,allCart,deleteCart};
