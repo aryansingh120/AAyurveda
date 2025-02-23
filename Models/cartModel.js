@@ -16,6 +16,10 @@ const cartSchema = new mongoose.Schema({
     default: 1, 
     min: [1, "Quantity cannot be less than 1"]
   },
+  totalPrice:{
+    type:Number,
+    required:[true,"totalPrice is required"]
+  },
   createdAt: {
     type: Date,
     default: Date.now 
