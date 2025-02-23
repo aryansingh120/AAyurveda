@@ -1,8 +1,9 @@
 const express=require("express");
 const router=express.Router();
-const {payment}=require("../controllers/razorpay")
+const {payment,verifyPayment}=require("../controllers/razorpay")
 
-router.post("/paras",payment);
+router.post("/generatePayment",payment);
+router.post ("/verifyPayment",verifyPayment)
 
 
 

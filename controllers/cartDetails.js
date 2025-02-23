@@ -2,23 +2,35 @@ const CartDetail = require("../Models/cartModel");
 
 const cartDetails = async (req, res) => {
   try {
-    const { productId,quantity } = req.body;
-    const user = req.user //middleware se aaya h
+    const { productId, quantity } = req.body;
+    const user = req.user; // Middleware se user ka data aa raha hai
 
     if (!productId || !quantity) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingCartItem = await CartDetail.findOne({ productId, userId :user?.userId });
-    if(existingCartItem)
-    {
-        existingCartItem.quantity += quantity;
-        await existingCartItem.save();
-        return res.status(200).json({ message: "Cart updated successfully", result: existingCartItem });
+    // 🛒 Product ko DB se fetch karna padega taaki uska price mile
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
+    const existingCartItem = await CartDetail.findOne({ productId, userId: user?.userId });
 
-    const cartOrder = { productId, userId :user?.userId };
+    if (existingCartItem) {
+      existingCartItem.quantity += quantity;
+      existingCartItem.totalPrice = existingCartItem.quantity * product.discountedPrice; // ✅ Total price update
+      await existingCartItem.save();
+      return res.status(200).json({ message: "Cart updated successfully", result: existingCartItem });
+    }
+
+    // 🆕 Naya cart item agar exist nahi karta
+    const cartOrder = {
+      productId,
+      userId: user?.userId,
+      quantity,
+      totalPrice: quantity * product.discountedPrice, // ✅ Total price calculate kar diya
+    };
 
     const result = await CartDetail.create(cartOrder);
 
@@ -27,6 +39,7 @@ const cartDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal Server error", error: error.message });
   }
 };
+
 
 const allCart = async (req, res) => {
   try {
