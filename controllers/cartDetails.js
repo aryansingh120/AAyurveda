@@ -1,5 +1,7 @@
 const CartDetail = require("../Models/cartModel");
-
+const productData =require("../Models/productData")
+const userDetails=require("../Models/userModel");
+const Order=require("../Models/orderModel")
 const cartDetails = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
@@ -10,7 +12,7 @@ const cartDetails = async (req, res) => {
     }
 
     // 🛒 Product ko DB se fetch karna padega taaki uska price mile
-    const product = await Product.findById(productId);
+    const product = await productData.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -74,4 +76,82 @@ const deleteCart=async(req,res)=>{
 
 }
 
-module.exports = {cartDetails,allCart,deleteCart};
+const updateCartQuantity = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    if (!productId || !quantity || quantity < 1) {
+      return res.status(400).json({ message: "Invalid productId or quantity" });
+    }
+
+    const cartItem = await CartDetail.findOne({ "productId": productId });
+     const product=await productData.findById(productId)
+     
+    if (!cartItem) {
+      return res.status(404).json({ message: "Cart item not found" });
+    }
+    
+    cartItem.quantity = quantity;
+    cartItem.totalPrice=quantity*product.discountedPrice
+    await cartItem.save();
+
+    return res.status(200).json({ 
+      message: "Cart quantity updated successfully", 
+      updatedCart: cartItem 
+    });
+  } catch (error) {
+    console.error("Error updating cart quantity:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const paras = async (req, res) => {
+  try {
+    const { productId,paymentMethod } = req.body;
+    
+
+    // Check if productId is provided
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    // Find the cart item that contains the given productId
+    const cartData = await CartDetail.findOne({ productId });
+    const userId=cartData.userId
+    const user = await userDetails.findOne({ _id: userId });
+    const product=await productData.findOne({_id:productId})
+    if (!cartData) {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+
+const mohit={
+  user:{
+    _id:user._id,
+       fullName:user.fullName,
+       email:user.email
+  },
+  products:[{
+    productId:productId,
+    quantity:cartData.quantity,
+    price:product.price
+
+  }],
+  totalAmount:cartData.totalPrice,
+  shippingAddress:"Kishanpura",
+  paymentMethod
+
+}
+  const result=await Order.create(mohit)
+
+    console.log("Cart Data =>", result);
+    
+    return res.status(200).json({ message: "Data received", cartData });
+  } catch (error) {
+    console.error("Error fetching cart data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+
+}
+
+
+module.exports = {cartDetails,allCart,deleteCart,updateCartQuantity,paras};

@@ -85,12 +85,12 @@ const login=async(req,res)=>{
     const token = jwt.sign(
         { userId: user._id, email: user.email }, // Payload
         process.env.SECRET_KEY, // Secret Key from .env
-        { expiresIn: "72h" } // Token expiry time
+        { expiresIn: "24h" } // Token expiry time
     );
 
     await loginMail(user.fullName,email)
 
-    return res.status(200).json({message:"login successfull",token:token})
+    return res.status(200).json({message:"login successfull",token:token,userName:user.fullName})
         
 }catch(error){
     return res.status(500).json({message:"login failed due to internal error",error:error.message});

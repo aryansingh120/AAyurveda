@@ -20,7 +20,8 @@ connectDb();
  app.use("/productData",require("./Routes/productData"))
  app.use("/video",require("./Routes/video"));
 app.use("/cart",require("./Routes/cartDetail"))
-app.use("/razorpay",require("./Routes/payment"))
+app.use("/razorpay",require("./Routes/payment"));
+app.use("/address",require("./Routes/address"))
 
 
 

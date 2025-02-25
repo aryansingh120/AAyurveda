@@ -1,35 +1,52 @@
-const Order=require("../Models/orderModel");
+const Order = require("../Models/orderModel");
+const UserDetails = require("../Models/userModel"); 
 
-const createOrder=async(req,res)=>{
-    try{
-        const { userId, products, shippingAddress } = req.body;
+const createOrder = async (req, res) => {
+    try {
+        const { userId, products, shippingAddress, paymentMethod } = req.body;
 
-    if (!userId || !products || products.length===0|| !shippingAddress) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-        let totalPrice=0;
+        if (!userId || !products || products.length === 0 || !shippingAddress || !paymentMethod) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        // ✅ User Details Fetch Karo
+        const user = await UserDetails.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        let totalPrice = 0;
         products.forEach(item => {
-            totalPrice+=item.quantity*item.price;
-            
+            totalPrice += item.quantity * item.price;
         });
 
-        const newOrder={userId,products,totalAmount:totalPrice,shippingAddress,};
+        // ✅ User Details ke saath Order Create Karo
+        const newOrder = await Order.create({
+            user: {
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email
+            },
+            products,
+            totalAmount: totalPrice,
+            shippingAddress,
+            paymentMethod,
+            paymentStatus: paymentMethod === "COD" ? "Pending" : "Completed",
+            orderStatus: "Pending",
+            razorpayOrderId: paymentMethod === "COD" ? null : req.body.razorpayOrderId || null,
+            paymentId: paymentMethod === "COD" ? null : req.body.paymentId || null
+        });
 
-        const result=await Order.create(newOrder)
-        if(!result)
-            return res.status(400).send({Message:"Order not placed"});
+        return res.status(200).json({ message: "Order Placed Successfully", order: newOrder });
 
-        return res.status(200).send({Message:"Order Placed SuccessFully",order:result})
-
-          
-      
-
-    }catch(error)
-    {
-        return res.status(500).send({message:"internal error",error:error.message})
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
+};
 
-}
+module.exports = { createOrder };
+
+
 
 const cancelOrder=async(req,res)=>{
     try {
