@@ -1,8 +1,4 @@
-const nodemailer=require("nodemailer");
-require("dotenv").config();
-
-const emailBody=(name)=>{
-    return  `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -69,7 +65,7 @@ const emailBody=(name)=>{
   <div class="email-container">
     <div class="header">Login Successful</div>
     <div class="content">
-      <p>Dear ${name},</p>
+      <p>Dear [User Name],</p>
       <p>We are pleased to inform you that your login was successful. Welcome back!</p>
       <p>If you have any questions or need further assistance, feel free to contact our support team.</p>
       <p>If this was not you, please let us know immediately.</p>
@@ -82,34 +78,3 @@ const emailBody=(name)=>{
   </div>
 </body>
 </html>
-`
-}
-
-const transporter=nodemailer.createTransport({
-    service:"gmail",
-    auth:{
-        user:process.env.EMAIL_USER,
-        pass:process.env.EMAIL_PASS
-    }
-
-});
-
-const loginMail = async (name, email) => {
-    try {
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email, // imported email from body
-            subject: "Login Successful",
-            html: emailBody(name)
-        };
-
-        await transporter.sendMail(mailOptions);
-        return { success: true, message: "Login email sent successfully" };
-    } catch (error) {
-        // console.error("Error sending login email:", error);
-        return { success: false, message: "Failed to send login email", error: error.message };
-    }
-};
-
-
-module.exports={loginMail}

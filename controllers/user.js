@@ -26,7 +26,10 @@ const signup=async(req,res)=>{
        const createdUser={fullName,email,password:hashedPassword,otp:storeOtp};
        await user2Schema.create(createdUser);
 
-        await registerMail(email);
+        const result=await registerMail(email);
+        
+        if(result.success!==true)
+            return res.status(400).json({message:"Otp not sent"})
 
        
         
@@ -41,12 +44,12 @@ const signup=async(req,res)=>{
 const verifyOtp=async(req,res)=>{
     const {otp}=req.body;
     if(!otp)
-        return res.status(400).json("otp required");
+        return res.status(400).json({message:"otp required"});
     try {
 
         const user= await user2Schema.findOne({otp})
         if(!user)
-            return res.status(500).json("invalid otp")
+            return res.status(500).json({message:"invalid otp"})
          
          
           
@@ -57,7 +60,7 @@ const verifyOtp=async(req,res)=>{
           }
           await userSchema.create(user2)
           await user2Schema.collection.drop();
-          return res.status(200).json("otp verification successfull");
+          return res.status(200).json({message:"otp verification successfull"});
 
     } catch (error) {
        return res.status(500).json({message:"otp verification failed due to internal error",findError:error.message})
@@ -69,18 +72,18 @@ const verifyOtp=async(req,res)=>{
 const login=async(req,res)=>{
     const {email,password}=req.body;
     if(!email)
-        return res.status(400).json("email is required");
+        return res.status(400).json({message:"email is required"});
     else if(!password)
-        return res.status(400).json("password is required");
+        return res.status(400).json({message:"password is required"});
 
     try {
         const user=await userSchema.findOne({email})   
        if(!user)
-        return res.status(400).json("invalid email");
+        return res.status(400).json({message:"invalid email"});
 
     const result=await bcrypt.compare(password,user.password)
      if(!result)
-        return res.status(400).json("invalid password");
+        return res.status(400).json({message:"invalid password"});
 
     const token = jwt.sign(
         { userId: user._id, email: user.email }, // Payload
@@ -88,7 +91,10 @@ const login=async(req,res)=>{
         { expiresIn: "24h" } // Token expiry time
     );
 
-    await loginMail(user.fullName,email)
+    const emailResponse=await loginMail(user.fullName,email)
+
+    if(!emailResponse.success)
+        return res.status(500).json({message:"Email not sent "})
 
     return res.status(200).json({message:"login successfull",token:token,userName:user.fullName})
         
