@@ -15,7 +15,7 @@ const signup=async(req,res)=>{
     try {
         if(password!==confirmPassword)
             return res.status(400).json({message:"pass or confirmpass not same"})
-          const existinguser=await user2Schema.findOne({email});
+          const existinguser=await userSchema.findOne({email});
           if(existinguser)
             return res.status(400).json({message:"email already exist"});
 
@@ -49,7 +49,7 @@ const verifyOtp=async(req,res)=>{
 
         const user= await user2Schema.findOne({otp})
         if(!user)
-            return res.status(500).json({message:"invalid otp"})
+            return res.status(400).json({message:"invalid otp"})
          
          
           

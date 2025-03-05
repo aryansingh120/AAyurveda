@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 const crypto=require("crypto");
 const axios=require("axios")
-const otpGenerator=()=>crypto.randomInt(1000,9909);
+const otpGenerator=()=>crypto.randomInt(100000,999999);
 const storeOtp=otpGenerator();
 
 const generateEmailTemplate = (otp) => {
